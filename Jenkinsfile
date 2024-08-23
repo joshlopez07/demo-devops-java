@@ -27,14 +27,14 @@ pipeline {
             }
         }
 
-        stage('Test OWASP') {
+        /*stage('Test OWASP') {
             steps {
                 sh 'mvn org.owasp:dependency-check-maven:check'
                 publishHTML([reportName: 'OWASP Dependency Check', reportDir: '.', reportFiles: "${OWASP_REPORT_PATH}"])
             }
-        }
+        }*/
 
-        /*stage('OWASP Dependency-Check Vulnerabilities') {
+        stage('OWASP Dependency-Check Vulnerabilities') {
             steps {
                 dependencyCheck additionalArguments: ''' 
                     -o './'
@@ -44,7 +44,7 @@ pipeline {
         
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
-        }*/
+        }
 
         stage('Test Code Review') {
             steps {

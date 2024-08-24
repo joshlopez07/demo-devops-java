@@ -35,7 +35,7 @@ pipeline {
             }
         }*/
 
-        stage('Test OWASP Dependency-Check Vulnerabilities') {
+        stage('Test  OWASP Dependency-Check Vulnerabilities') {
             steps {
                 sh 'mvn org.owasp:dependency-check-maven:check -Dnvd.api.key=${NVD_API_KEY}'
                 dependencyCheck additionalArguments: ''' 
@@ -48,12 +48,19 @@ pipeline {
             }
         }
 
-        stage('Test Code Review') {
+        /*stage('Test Code Review') {
             steps {
                 withSonarQubeEnv('SonarCloud') {
                     sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}"
                     //mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=joshlopez07_demo-devops-java-devsu
                     //sh "mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=${SONAR_ORG} -Dsonar.login=${SONAR_TOKEN}"
+                }
+            }
+        }*/
+        stage('Test Code Review') {
+            steps {
+                withSonarQubeEnv('SonarCloud') {
+                    sh 'mvn clean verify org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}'
                 }
             }
         }
@@ -78,13 +85,13 @@ pipeline {
             }
         }
         
-        stage('Deploy to Minikube') {
+        /*stage('Deploy to Minikube') {
             steps {
                 script {
                     sh "kubectl apply -f deployment.yaml --kubeconfig=${KUBECONFIG}"
                 }
             }
-        }
+        }*/
     }
 
     post {

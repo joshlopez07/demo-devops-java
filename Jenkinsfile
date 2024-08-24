@@ -75,6 +75,14 @@ pipeline {
             }
         }
 
+        stage('Scan Docker Image with Trivy') {
+            steps {
+                script {
+                    sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL --no-progress --exit-code 1 ${DOCKER_IMAGE}"
+                }
+            }
+        }
+
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {

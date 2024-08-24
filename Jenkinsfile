@@ -11,7 +11,7 @@ pipeline {
         SONAR_ORG = 'Joseph López'
         //SONAR_TOKEN = 'your-sonarcloud-token'
         MINIKUBE_IP = '54.89.184.74' //Ip instancia EC2
-        KUBECONFIG = '/root/jenkins/.kube/config' 
+        KUBECONFIG = '/home/jenkins/.kube/config' 
     }
 
     stages {

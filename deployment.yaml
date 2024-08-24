@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: demo-devops-java
-        image: demo-devops-java:1.0.0
+        image: joshlopez07/demo-devops-java:1.0.0 
         ports:
         - containerPort: 8000
         env:

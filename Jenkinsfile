@@ -5,11 +5,11 @@ pipeline {
         GIT_REPO = 'https://github.com/joshlopez07/demo-devops-java.git'
         BRANCH = 'master'
         GITHUB_CREDENTIALS = 'github_credentials'
-        DOCKER_IMAGE = "demo-devops-java:1.0.0"
         OWASP_REPORT_PATH = 'owasp-report.html'
         SONAR_PROJECT_KEY = 'joshlopez07_demo-devops-java-devsu'
         SONAR_ORG = 'Joseph López'
-        //SONAR_TOKEN = 'your-sonarcloud-token'
+        DOCKER_IMAGE = "joshlopez07/demo-devops-java:1.0.0" // Repositorio en Docker Hub
+        DOCKERHUB_CREDENTIALS = 'dockerhub_credentials' 
         MINIKUBE_IP = '54.89.184.74' //Ip instancia EC2
         KUBECONFIG = '/home/jenkins/.kube/config' 
     }
@@ -34,7 +34,7 @@ pipeline {
             }
         }*/
 
-        stage('OWASP Dependency-Check Vulnerabilities') {
+        stage('Test OWASP Dependency-Check Vulnerabilities') {
             steps {
                 dependencyCheck additionalArguments: ''' 
                     -o './'
@@ -56,11 +56,29 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'eval $(minikube -p minikube docker-env)'
-                    sh "docker build -t ${DOCKER_IMAGE} ."
+                    sh 'docker build -t demo-devops-java:1.0.0 .'
+                    sh "docker tag demo-devops-java:1.0.0 ${DOCKER_IMAGE}"
+                }
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKERHUB_CREDENTIALS}", passwordVariable: 'DOCKERHUB_PASSWORD', usernameVariable: 'DOCKERHUB_USERNAME')]) {
+                        sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                        sh "docker push ${DOCKER_IMAGE}"
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Minikube') {
+            steps {
+                script {
                     sh "kubectl apply -f deployment.yaml --kubeconfig=${KUBECONFIG}"
                 }
             }

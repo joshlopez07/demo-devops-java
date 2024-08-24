@@ -17,6 +17,12 @@ WORKDIR /app
 # Copia el archivo JAR compilado desde la etapa de build
 COPY --from=build /app/target/*.jar app.jar
 
+# Actualizar paquetes en una imagen basada en Debian/Ubuntu
+RUN apt-get update && apt-get upgrade -y
+
+# O si usas Alpine:
+RUN apk update && apk upgrade
+
 # Exponer el puerto 8000 para la aplicación
 EXPOSE 8000
 

@@ -61,7 +61,7 @@ pipeline {
                 script {
                     sh 'eval $(minikube -p minikube docker-env)'
                     sh "docker build -t ${DOCKER_IMAGE} ."
-                    sh "kubectl apply -f k8s/deployment.yaml --kubeconfig=${KUBECONFIG}"
+                    sh "kubectl apply -f deployment.yaml --kubeconfig=${KUBECONFIG}"
                 }
             }
         }

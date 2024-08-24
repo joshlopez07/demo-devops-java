@@ -22,8 +22,6 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: "prod"
-        livenessProbe: {}
-        readinessProbe: {}
 ---
 apiVersion: v1
 kind: Service

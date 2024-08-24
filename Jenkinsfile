@@ -11,7 +11,8 @@ pipeline {
         DOCKER_IMAGE = "joshlopez07/demo-devops-java:1.0.0" // Repositorio en Docker Hub
         DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
         MINIKUBE_IP = '54.89.184.74' //Ip instancia EC2
-        KUBECONFIG = '/home/jenkins/.kube/config' 
+        KUBECONFIG = '/home/jenkins/.kube/config'
+        NVD_API_KEY = 'c04ad272-f369-4fc3-9171-820a44bfb756'
     }
 
     stages {
@@ -36,6 +37,7 @@ pipeline {
 
         stage('Test OWASP Dependency-Check Vulnerabilities') {
             steps {
+                sh 'mvn org.owasp:dependency-check-maven:check -Dnvd.api.key=${NVD_API_KEY}'
                 dependencyCheck additionalArguments: ''' 
                     -o './'
                     -s './'

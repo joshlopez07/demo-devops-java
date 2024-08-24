@@ -35,7 +35,7 @@ pipeline {
             }
         }*/
 
-        stage('Test  OWASP Dependency-Check Vulnerabilities') {
+        stage('Test  OWASP') {
             steps {
                 sh 'mvn org.owasp:dependency-check-maven:check -Dnvd.api.key=${NVD_API_KEY}'
                 dependencyCheck additionalArguments: ''' 

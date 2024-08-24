@@ -69,7 +69,7 @@
 		<dependency>
 		    <groupId>org.owasp</groupId>
 		    <artifactId>dependency-check-maven</artifactId>
-		    <version>8.3.0</version> <!-- Usa la última versión disponible -->
+		    <version>10.0.3</version> <!-- Usa la última versión disponible -->
 		</dependency>
 	</dependencies>
 
@@ -98,6 +98,18 @@
         	        </execution>
         	    </executions>
         	</plugin>
+			<plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>10.0.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 

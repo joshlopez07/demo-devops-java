@@ -9,7 +9,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'joshlopez07_demo-devops-java-devsu'
         SONAR_ORG = 'Joseph López'
         DOCKER_IMAGE = "joshlopez07/demo-devops-java:1.0.0" // Repositorio en Docker Hub
-        DOCKERHUB_CREDENTIALS = 'dockerhub_credentials' 
+        DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
         MINIKUBE_IP = '54.89.184.74' //Ip instancia EC2
         KUBECONFIG = '/home/jenkins/.kube/config' 
     }

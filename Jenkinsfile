@@ -98,13 +98,13 @@ pipeline {
             }
         }
         
-        /*stage('Deploy to Minikube') {
+        stage('Deploy to Minikube') {
             steps {
                 script {
                     sh "kubectl apply -f deployment.yaml --kubeconfig=${KUBECONFIG}"
                 }
             }
-        }*/
+        }
     }
 
     post {

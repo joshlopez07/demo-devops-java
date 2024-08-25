@@ -99,15 +99,10 @@ pipeline {
             }
         }
 
-        stage('Clean Up Previous Results') {
-            steps {
-                sh 'rm -rf jmeter_results'
-            }
-        }
-        
         stage('JMeter Test') {
             steps {
                 script {
+                    sh 'rm -rf jmeter_results'
                     // Crear directorio para resultados
                     sh "mkdir -p ${RESULTS_DIR}"
 

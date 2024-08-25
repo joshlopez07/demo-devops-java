@@ -99,6 +99,12 @@ pipeline {
             }
         }
 
+        stage('Clean Up Previous Results') {
+            steps {
+                sh 'rm -rf jmeter_results'
+            }
+        }
+        
         stage('JMeter Test') {
             steps {
                 script {

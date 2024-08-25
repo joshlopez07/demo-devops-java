@@ -30,12 +30,13 @@
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create User" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
+              <!-- Aquí configuramos el cuerpo de la solicitud como raw JSON -->
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.name"></stringProp>
-                <stringProp name="Argument.value">{&quot;dni&quot;:&quot;123456&quot;,&quot;name&quot;:&quot;John Doe&quot;}</stringProp>
+                <stringProp name="Argument.name"></stringProp> <!-- Dejar nombre vacío para JSON raw -->
+                <stringProp name="Argument.value">{"dni":"123456","name":"John Doe"}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
-                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <boolProp name="HTTPArgument.use_equals">false</boolProp>
               </elementProp>
             </collectionProp>
           </elementProp>
@@ -50,6 +51,7 @@
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <boolProp name="HTTPSampler.monitor">false</boolProp>
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <!-- Aquí se configura el encabezado Content-Type -->
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">

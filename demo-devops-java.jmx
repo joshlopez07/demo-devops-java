@@ -32,10 +32,10 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.name"></stringProp>
                 <stringProp name="Argument.value">{&quot;dni&quot;:&quot;123456&quot;,&quot;name&quot;:&quot;John Doe&quot;}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                <stringProp name="Argument.name"></stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
@@ -75,8 +75,6 @@
             <intProp name="Assertion.test_type">2</intProp>
           </ResponseAssertion>
         </hashTree>
-
-        <!-- Similar structure for Get Users and Get User by ID -->
       </hashTree>
     </hashTree>
   </hashTree>

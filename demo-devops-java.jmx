@@ -30,11 +30,11 @@
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create User" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
-              <!-- Aquí configuramos el cuerpo de la solicitud como raw JSON -->
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.name"></stringProp> <!-- Dejar nombre vacío para JSON raw -->
-                <stringProp name="Argument.value">{"dni":"123456","name":"John Doe"}</stringProp>
+                <stringProp name="Argument.value"></stringProp>
+                <!--<stringProp name="Argument.value">{"dni":"123456","name":"John Doe"}</stringProp> -->
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">false</boolProp>
               </elementProp>
@@ -44,7 +44,7 @@
           <stringProp name="HTTPSampler.port">30007</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/api/users</stringProp>
-          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>

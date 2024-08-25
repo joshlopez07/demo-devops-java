@@ -13,6 +13,9 @@ pipeline {
         MINIKUBE_IP = '54.89.184.74' //Ip instancia EC2
         KUBECONFIG = '/home/jenkins/.kube/config'
         NVD_API_KEY = 'c04ad272-f369-4fc3-9171-820a44bfb756'
+        JMETER_HOME = '/root/jenkins/apache-jmeter-5.4.1'  // Ruta donde está instalado JMeter
+        JMETER_JMX = 'demo-devops-java.jmx'                // Nombre del archivo .jmx
+        RESULTS_DIR = 'jmeter_results'                     // Carpeta para almacenar resultados de JMeter
     }
 
     stages {
@@ -22,18 +25,17 @@ pipeline {
             }
         }
         
-        stage('Build and Test') {
+        stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package -DskipTests' // Construir el proyecto sin ejecutar las pruebas
             }
         }
 
-        /*stage('Test OWASP') {
+        stage('Unit  Tests') {
             steps {
-                sh 'mvn org.owasp:dependency-check-maven:check'
-                publishHTML([reportName: 'OWASP Dependency Check', reportDir: '.', reportFiles: "${OWASP_REPORT_PATH}"])
+                sh 'mvn clean test' // Ejecutar solo las pruebas
             }
-        }*/
+        }
 
         stage('Test  OWASP') {
             steps {
@@ -49,15 +51,6 @@ pipeline {
             }
         }
 
-        /*stage('Test Code Review') {
-            steps {
-                withSonarQubeEnv('SonarCloud') {
-                    sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY}"
-                    //mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=joshlopez07_demo-devops-java-devsu
-                    //sh "mvn sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.organization=${SONAR_ORG} -Dsonar.login=${SONAR_TOKEN}"
-                }
-            }
-        }*/
         stage('Test Code Review') {
             steps {
                 withSonarQubeEnv('SonarCloud') {
@@ -102,6 +95,31 @@ pipeline {
             steps {
                 script {
                     sh "kubectl apply -f deployment.yaml --kubeconfig=${KUBECONFIG}"
+                }
+            }
+        }
+
+        stage('JMeter Test') {
+            steps {
+                script {
+                    // Crear directorio para resultados
+                    sh "mkdir -p ${RESULTS_DIR}"
+
+                    // Ejecutar pruebas de JMeter en modo non-GUI (headless)
+                    sh "${JMETER_HOME}/bin/jmeter -n -t ${JMETER_JMX} -l ${RESULTS_DIR}/results.jtl -e -o ${RESULTS_DIR}/report"
+                }
+            }
+        }
+
+        stage('Publish JMeter Report') {
+            steps {
+                script {
+                    // Publicar el reporte HTML de JMeter
+                    publishHTML([
+                        reportDir: "${RESULTS_DIR}/report",
+                        reportFiles: 'index.html',
+                        reportName: 'JMeter Test Report'
+                    ])
                 }
             }
         }

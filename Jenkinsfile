@@ -13,7 +13,7 @@ pipeline {
         MINIKUBE_IP = '54.89.184.74' //Ip instancia EC2
         KUBECONFIG = '/home/jenkins/.kube/config'
         NVD_API_KEY = 'c04ad272-f369-4fc3-9171-820a44bfb756'
-        JMETER_HOME = '/root/jenkins/apache-jmeter-5.4.1'  // Ruta donde está instalado JMeter
+        JMETER_HOME = '/opt/jmeter'  // Ruta donde está instalado JMeter
         JMETER_JMX = 'demo-devops-java.jmx'                // Nombre del archivo .jmx
         RESULTS_DIR = 'jmeter_results'                     // Carpeta para almacenar resultados de JMeter
     }

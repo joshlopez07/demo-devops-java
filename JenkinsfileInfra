@@ -137,7 +137,7 @@ pipeline {
         }
         cleanup {
             // Eliminar recursos de AWS al final
-            sh 'terraform destroy -auto-approve'
+            //sh 'terraform destroy -auto-approve'
         }
     }
 }

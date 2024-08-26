@@ -77,7 +77,7 @@ pipeline {
                               "sudo tar -C /usr/local/bin -xzf crictl-v1.30.0-linux-amd64.tar.gz",
                               
                               // Iniciar Minikube
-                              "sudo minikube start --driver=none",
+                              "sudo -u ec2-user minikube start --driver=none",
 
                               // Configuración de carpetas y permisos
                               "sudo mkdir -p /home/ec2-user/.kube /home/ec2-user/.minikube",
@@ -116,7 +116,7 @@ pipeline {
                     // Conectar por SSH a la instancia EC2 para validar o configurar más cosas si es necesario
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} << EOF
-                    sudo minikube start --driver=none
+                    sudo -u ec2-user minikube start --driver=none
                     if [ -f /root/.kube/config ]; then
                         sudo mkdir -p /home/ec2-user/.kube /home/ec2-user/.minikube
                         sudo cp -r /root/.kube/* /home/ec2-user/.kube/

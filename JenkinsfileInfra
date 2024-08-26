@@ -67,17 +67,26 @@ pipeline {
                               "go mod vendor",  // Esto ayudará a usar las dependencias locales
                               "go build -o bin/cri-dockerd || { echo 'Build failed'; exit 1; }",  // Si falla, el script se detendrá
                               //"go get && go build -o bin/cri-dockerd",
-                              "sudo mv bin/cri-dockerd /usr/local/bin/cri-dockerd || { echo 'File not found'; exit 1; }",
+                              //"sudo mv bin/cri-dockerd /usr/local/bin/cri-dockerd || { echo 'File not found'; exit 1; }",
                               "sudo cp bin/cri-dockerd /usr/local/bin/",
                               "sudo cp packaging/systemd/cri-docker.service /etc/systemd/system/",
                               "sudo cp packaging/systemd/cri-docker.socket /etc/systemd/system/",
+                              "sudo sed -i -e 's|/usr/bin/cri-dockerd|/usr/local/bin/cri-dockerd|g' /etc/systemd/system/cri-docker.service",
                               "sudo systemctl daemon-reload",
                               "sudo systemctl enable cri-docker.service",
                               "sudo systemctl enable --now cri-docker.socket",
+                              "sudo systemctl start cri-docker.service",
 
                               // Instalación de crictl
                               "curl -LO https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.30.0/crictl-v1.30.0-linux-amd64.tar.gz",
                               "sudo tar -C /usr/local/bin -xzf crictl-v1.30.0-linux-amd64.tar.gz || { echo 'Failed to extract crictl'; exit 1; }",
+                              "rm -f crictl-${VERSION}-linux-amd64.tar.gz",
+
+                              //Instalación CNI
+                              "sudo mkdir -p /opt/cni/bin",
+                              "sudo curl -Lo /opt/cni/bin/cni-plugins-linux-amd64-v1.3.0.tgz https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz",
+                              "sudo tar -xzvf /opt/cni/bin/cni-plugins-linux-amd64-v1.3.0.tgz -C /opt/cni/bin/",
+                              "sudo rm /opt/cni/bin/cni-plugins-linux-amd64-v1.3.0.tgz",
                               
                               // Iniciar Minikube
                               "sudo -u ec2-user minikube start --driver=none",

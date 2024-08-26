@@ -44,7 +44,9 @@ pipeline {
                           provisioner "remote-exec" {
                             inline = [
                               "sudo yum update -y",
-                              "sudo yum install -y docker conntrack socat ebtables ethtool",  // Instalación de dependencias de red
+                              
+                              // Instalación de dependencias de red
+                              "sudo yum install -y docker conntrack socat ebtables ethtool",  
                               "sudo systemctl enable docker",
                               "sudo systemctl start docker",
                               "sudo usermod -aG docker ec2-user",
@@ -54,19 +56,30 @@ pipeline {
                               "curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64",
                               "chmod +x minikube-linux-amd64",
                               "sudo install minikube-linux-amd64 /usr/local/bin/minikube",
+                              
                               // Instalación de cri-dockerd
-                              "sudo yum install -y git",
+                              "sudo yum install -y git golang",
                               "git clone https://github.com/Mirantis/cri-dockerd.git",
                               "cd cri-dockerd",
+                              "sudo mkdir -p /usr/local/bin/",
                               "mkdir bin",
                               "go get && go build -o bin/cri-dockerd",
+                              "sudo mv bin/cri-dockerd /usr/local/bin/cri-dockerd",
                               "sudo cp bin/cri-dockerd /usr/local/bin/",
                               "sudo cp packaging/systemd/cri-docker.service /etc/systemd/system/",
                               "sudo cp packaging/systemd/cri-docker.socket /etc/systemd/system/",
                               "sudo systemctl daemon-reload",
                               "sudo systemctl enable cri-docker.service",
                               "sudo systemctl enable --now cri-docker.socket",
+
+                              // Instalación de crictl
+                              "curl -LO https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.30.0/crictl-v1.30.0-linux-amd64.tar.gz",
+                              "sudo tar -C /usr/local/bin -xzf crictl-v1.30.0-linux-amd64.tar.gz",
+                              
+                              // Iniciar Minikube
                               "sudo minikube start --driver=none",
+
+                              // Configuración de carpetas y permisos
                               "sudo mkdir -p /home/ec2-user/.kube /home/ec2-user/.minikube",
                               "sudo mv /root/.kube /home/ec2-user/.kube || true",
                               "sudo mv /root/.minikube /home/ec2-user/.minikube || true",

@@ -67,8 +67,9 @@ pipeline {
                               "sudo systemctl enable cri-docker.service",
                               "sudo systemctl enable --now cri-docker.socket",
                               "sudo minikube start --driver=none",
-                              "sudo mv /root/.kube /home/ec2-user/.kube",
-                              "sudo mv /root/.minikube /home/ec2-user/.minikube",
+                              "sudo mkdir -p /home/ec2-user/.kube /home/ec2-user/.minikube",
+                              "sudo mv /root/.kube /home/ec2-user/.kube || true",
+                              "sudo mv /root/.minikube /home/ec2-user/.minikube || true",
                               "sudo chown -R ec2-user:ec2-user /home/ec2-user/.kube /home/ec2-user/.minikube"
                             ]
 

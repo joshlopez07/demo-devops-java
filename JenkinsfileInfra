@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'us-west-2'  // Cambia a la región que prefieras
+        AWS_REGION = 'us-east-1'  // Cambia a la región que prefieras
         INSTANCE_TYPE = 't2.medium'
         AMI_ID = 'ami-066784287e358dad1'  // ID de la AMI (Amazon Linux 2)
         GIT_REPO = 'https://github.com/joshlopez07/demo-devops-java.git'
@@ -84,6 +84,7 @@ pipeline {
                         }
                         """
                         sh 'terraform init'
+                        sh 'terraform plan'
                         sh 'terraform apply -auto-approve'
                     }
                 }

@@ -81,8 +81,8 @@ pipeline {
 
                               // Configuración de carpetas y permisos
                               "sudo mkdir -p /home/ec2-user/.kube /home/ec2-user/.minikube",
-                              "sudo mv /root/.kube /home/ec2-user/.kube || true",
-                              "sudo mv /root/.minikube /home/ec2-user/.minikube || true",
+                              "sudo cp /root/.kube /home/ec2-user/.kube || true",
+                              "sudo cp /root/.minikube /home/ec2-user/.minikube || true",
                               "sudo chown -R ec2-user:ec2-user /home/ec2-user/.kube /home/ec2-user/.minikube",
                               "sudo -u ec2-user minikube start --driver=none"
                             ]

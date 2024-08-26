@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_REGION = 'us-west-2'  // Cambia a la región que prefieras
         INSTANCE_TYPE = 't2.medium'
-        AMI_ID = 'ami-0c55b159cbfafe1f0'  // ID de la AMI (Amazon Linux 2)
+        AMI_ID = 'ami-066784287e358dad1'  // ID de la AMI (Amazon Linux 2)
         GIT_REPO = 'https://github.com/joshlopez07/demo-devops-java.git'
         BRANCH = 'master'
         GITHUB_CREDENTIALS = 'github_credentials'
@@ -30,13 +30,13 @@ pipeline {
                           region = "${AWS_REGION}"
                         }
 
-                        resource "aws_instance" "minikube" {
+                        resource "aws_instance" "minikubeTerraform" {
                           ami           = "${AMI_ID}"
                           instance_type = "${INSTANCE_TYPE}"
                           key_name      = "${KEY_PAIR_NAME}"
 
                           tags = {
-                            Name = "minikube-instance"
+                            Name = "minikube-instanceTerraform"
                           }
 
                           provisioner "remote-exec" {

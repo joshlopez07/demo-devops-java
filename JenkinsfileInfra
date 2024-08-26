@@ -87,6 +87,11 @@ pipeline {
                               "sudo curl -Lo /opt/cni/bin/cni-plugins-linux-amd64-v1.3.0.tgz https://github.com/containernetworking/plugins/releases/download/v1.3.0/cni-plugins-linux-amd64-v1.3.0.tgz",
                               "sudo tar -xzvf /opt/cni/bin/cni-plugins-linux-amd64-v1.3.0.tgz -C /opt/cni/bin/",
                               "sudo rm -rf /opt/cni/bin/cni-plugins-linux-amd64-v1.3.0.tgz",
+
+                              # Descargar e instalar la versión correcta de kubectl
+                              "curl -LO 'https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl'",
+                              "chmod +x kubectl",
+                              "sudo mv kubectl /usr/local/bin/",
                               
                               // Iniciar Minikube
                               "sudo -u ec2-user minikube start --driver=none",
@@ -130,13 +135,11 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} << EOF
                     sudo -u ec2-user minikube start --driver=none
-                    if [ -f /root/.kube/config ]; then
-                        sudo mkdir -p /home/ec2-user/.kube /home/ec2-user/.minikube
-                        sudo cp -r /root/.kube/* /home/ec2-user/.kube/
-                        sudo cp -r /root/.minikube/* /home/ec2-user/.minikube/
-                        sudo chown -R ec2-user:ec2-user /home/ec2-user/.kube /home/ec2-user/.minikube
+                    # Verificar si los archivos de configuración existen en /home/ec2-user
+                    if [ -f /home/ec2-user/.kube/config ]; then
+                        echo "Minikube configuration found."
                     else
-                        echo "Minikube configuration not found."
+                        echo "Minikube configuration not found in /home/ec2-user/.kube/. Exiting..."
                         exit 1
                     fi
                     kubectl get nodes

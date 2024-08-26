@@ -74,13 +74,13 @@ pipeline {
                               type        = "ssh"
                               user        = "ec2-user"
                               private_key = file("${SSH_PRIVATE_KEY}")
-                              host        = aws_instance.minikube.public_ip
+                              host        = aws_instance.minikubeTerraform.public_ip
                             }
                           }
                         }
 
                         output "instance_ip" {
-                          value = aws_instance.minikube.public_ip
+                          value = aws_instance.minikubeTerraform.public_ip
                         }
                         """
                         sh 'terraform init'

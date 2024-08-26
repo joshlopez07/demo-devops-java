@@ -99,23 +99,23 @@
         	    </executions>
         	</plugin>
 			<plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <version>10.0.3</version>
-            <configuration>
-                <autoupdate>true</autoupdate>
-                <cveUrlBase>https://services.nvd.nist.gov/rest/json/cves/2.0/</cveUrlBase>
-                <cveUrlModified>https://services.nvd.nist.gov/rest/json/cves/2.0/modified</cveUrlModified>
-                <nvdApiKey>c04ad272-f369-4fc3-9171-820a44bfb756</nvdApiKey>
-            </configuration>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>check</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
+        	    <groupId>org.owasp</groupId>
+        	    <artifactId>dependency-check-maven</artifactId>
+        	    <version>10.0.3</version>
+        	    <configuration>
+        	        <autoupdate>true</autoupdate>
+        	        <cveUrlBase>https://services.nvd.nist.gov/rest/json/cves/2.0/</cveUrlBase>
+        	        <cveUrlModified>https://services.nvd.nist.gov/rest/json/cves/2.0/modified</cveUrlModified>
+        	        <nvdApiKey>c04ad272-f369-4fc3-9171-820a44bfb756</nvdApiKey>
+        	    </configuration>
+        	    <executions>
+        	        <execution>
+        	            <goals>
+        	                <goal>check</goal>
+        	            </goals>
+        	        </execution>
+        	    </executions>
+        	</plugin>
 		</plugins>
 	</build>
 

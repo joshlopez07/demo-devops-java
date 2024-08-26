@@ -32,9 +32,8 @@
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.name"></stringProp> <!-- Dejar nombre vacío para JSON raw -->
+                <stringProp name="Argument.name"></stringProp>
                 <stringProp name="Argument.value"></stringProp>
-                <!--<stringProp name="Argument.value">{"dni":"123456","name":"John Doe"}</stringProp> -->
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">false</boolProp>
               </elementProp>
@@ -51,7 +50,6 @@
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <boolProp name="HTTPSampler.monitor">false</boolProp>
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <!-- Aquí se configura el encabezado Content-Type -->
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
             <collectionProp name="Arguments.arguments">
               <elementProp name="" elementType="HTTPArgument">

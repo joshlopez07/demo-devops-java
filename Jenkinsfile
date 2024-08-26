@@ -102,7 +102,7 @@ pipeline {
         stage('JMeter Test') {
             steps {
                 script {
-                    sh 'rm -rf jmeter_results'
+                    sh 'rm -rf jmeter_results/*'
                     // Crear directorio para resultados
                     sh "mkdir -p ${RESULTS_DIR}"
 
@@ -111,22 +111,20 @@ pipeline {
                 }
             }
         }
-
-        stage('Publish JMeter Report') {
-            steps {
-                script {
-                    // Publicar el reporte HTML de JMeter
-                    publishHTML([
-                        reportDir: "${RESULTS_DIR}/report",
-                        reportFiles: 'index.html',
-                        reportName: 'JMeter Test Report'
-                    ])
-                }
-            }
-        }
     }
 
     post {
+        always {
+            // Publicar el informe de JMeter
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: "${RESULTS_DIR}/report",
+                reportFiles: 'index.html',
+                reportName: 'JMeter Test Report'
+            ])
+        }
         success {
             echo 'Pipeline completed successfully.'
         }

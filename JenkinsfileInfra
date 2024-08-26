@@ -34,7 +34,9 @@ pipeline {
                           ami           = "${AMI_ID}"
                           instance_type = "${INSTANCE_TYPE}"
                           key_name      = "${KEY_PAIR_NAME}"
+                          subnet_id     = "subnet-07cdbf3708dae9d81"
 
+                          security_groups = ["sg-0ebae823a0b82b061"] 
                           tags = {
                             Name = "minikube-instanceTerraform"
                           }

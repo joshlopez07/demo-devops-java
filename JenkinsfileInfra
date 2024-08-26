@@ -135,7 +135,7 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} << EOF
                     sudo -u ec2-user minikube start --driver=none
-                    # Verificar si los archivos de configuración existen en /home/ec2-user
+                    // Verificar si los archivos de configuración existen en /home/ec2-user
                     if [ -f /home/ec2-user/.kube/config ]; then
                         echo "Minikube configuration found."
                     else

@@ -11,7 +11,7 @@ pipeline {
         DOCKER_IMAGE = "joshlopez07/demo-devops-java:1.0.0"
         DOCKERHUB_CREDENTIALS = 'dockerhub-credentials'
         KEY_PAIR_NAME = 'minikube' // Nombre del par de claves SSH en AWS
-        SSH_PRIVATE_KEY = '/root/jenkins/minikube.pem' // Ruta al archivo de llave privada .pem
+        SSH_PRIVATE_KEY = '/home/jenkins/minikube.pem' // Ruta al archivo de llave privada .pem
     }
 
     stages {

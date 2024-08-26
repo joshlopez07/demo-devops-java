@@ -89,7 +89,7 @@ pipeline {
                               "sudo rm -rf /opt/cni/bin/cni-plugins-linux-amd64-v1.3.0.tgz",
 
                               // Descargar e instalar la versión correcta de kubectl
-                              "curl -LO 'https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl'",
+                              "curl -LO 'https://dl.k8s.io/release/\$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl'",
                               "chmod +x kubectl",
                               "sudo mv kubectl /usr/local/bin/",
                               

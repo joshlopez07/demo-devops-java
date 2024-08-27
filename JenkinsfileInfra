@@ -177,6 +177,8 @@ pipeline {
     post {
         success {
             echo 'Pipeline completed successfully.'
+            echo 'Waiting for 10 minutes before cleanup...'
+            sh 'sleep 300' // Espera de 10 minutos para probar los servicios (300 segundos)
         }
         failure {
             echo 'Pipeline failed.'

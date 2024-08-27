@@ -41,8 +41,79 @@ pipeline {
                             Name = "minikube-instanceTerraform"
                           }
 
+                          provisioner "file" {
+                            source      = "setup_minikube.sh"
+                            destination = "/home/ec2-user/setup_minikube.sh"
+                            connection {
+                              type        = "ssh"
+                              user        = "ec2-user"
+                              private_key = file("${SSH_PRIVATE_KEY}")
+                              host        = aws_instance.minikubeTerraform.public_ip
+                            }
+                          }
+
                           provisioner "remote-exec" {
                             inline = [
+                              "chmod +x /home/ec2-user/setup_minikube.sh",
+                              "sudo /home/ec2-user/setup_minikube.sh"
+                            ]
+                            connection {
+                              type        = "ssh"
+                              user        = "ec2-user"
+                              private_key = file("${SSH_PRIVATE_KEY}")
+                              host        = aws_instance.minikubeTerraform.public_ip
+                            }
+                          }
+                        }
+
+                        output "instance_ip" {
+                          value = aws_instance.minikubeTerraform.public_ip
+                        }
+                        output "instance_private_ip" {
+                          value = aws_instance.minikubeTerraform.private_ip
+                        }
+                        """
+                        sh 'terraform init'
+                        sh 'terraform plan'
+                        sh 'terraform apply -auto-approve'
+                    }
+                }
+            }
+        }
+
+        stage('Configure Minikube and Deploy') {
+            steps {
+                script {
+                    def instance_ip = sh(script: "terraform output -raw instance_private_ip", returnStdout: true).trim()
+                    
+                    withEnv(["KUBECONFIG=/home/jenkins/.kube2/config"]) {
+                        sh 'chmod +x configure_kubectl.sh'
+                        sh "./configure_kubectl.sh ${instance_ip} ${SSH_PRIVATE_KEY}"
+                        sh "kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube2/config"
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully.'
+            echo 'Waiting for 10 minutes before cleanup...'
+            sh 'sleep 300' // Espera de 10 minutos para probar los servicios (300 segundos)
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+        cleanup {
+            // Eliminar recursos de AWS al final
+            sh 'terraform destroy -auto-approve'
+        }
+    }
+}
+
+/*inline = [
                               "sudo yum update -y",
                               
                               // Instalación de dependencias de red
@@ -104,52 +175,8 @@ pipeline {
                               "sudo chown -R ec2-user:ec2-user /home/ec2-user/.kube /home/ec2-user/.minikube",
                               "sudo -u ec2-user minikube start --driver=none"
                             ]
-
-                            connection {
-                              type        = "ssh"
-                              user        = "ec2-user"
-                              private_key = file("${SSH_PRIVATE_KEY}")
-                              host        = aws_instance.minikubeTerraform.public_ip
-                            }
-                          }
-                        }
-
-                        output "instance_ip" {
-                          value = aws_instance.minikubeTerraform.public_ip
-                        }
-                        output "instance_private_ip" {
-                          value = aws_instance.minikubeTerraform.private_ip
-                        }
-                        """
-                        sh 'terraform init'
-                        sh 'terraform plan'
-                        sh 'terraform apply -auto-approve'
-                    }
-                }
-            }
-        }
-
-        stage('Configure Minikube and Deploy') {
-            steps {
-                script {
-                    //def instance_ip = sh(script: "terraform output -raw instance_ip", returnStdout: true).trim()
-                    def instance_ip = sh(script: "terraform output -raw instance_private_ip", returnStdout: true).trim()
-                    
-                    // Conectar por SSH a la instancia EC2 para validar o configurar más cosas si es necesario
-                    /*sh """
-                    ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} <<EOF
-                    sudo -u ec2-user minikube start --driver=none
-                    if [ -f /home/ec2-user/.kube/config ]; then
-                        echo "Minikube configuration found."
-                    else
-                        echo "Minikube configuration not found in /home/ec2-user/.kube/. Exiting..."
-                        exit 1
-                    fi
-                    kubectl get nodes
-                    EOF
-                    """*/
-                    
-                    // Actualizar KUBECONFIG con la IP de la nueva instancia
+                            
+                            // Actualizar KUBECONFIG con la IP de la nueva instancia
                     withEnv(["KUBECONFIG=/home/jenkins/.kube2/config"]) {
                         sh "ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} sudo -u ec2-user minikube start --driver=none"
                         sh "scp -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}:/home/ec2-user/.kube/config /home/jenkins/.kube2/config"
@@ -159,33 +186,4 @@ pipeline {
                         sh "sed -i 's|/home/ec2-user/.minikube/profiles/minikube|/home/jenkins/.minikube2|g' /home/jenkins/.kube2/config"
                         sh "sed -i 's|/home/ec2-user/.minikube|/home/jenkins/.minikube2|g' /home/jenkins/.kube2/config"
                         sh "kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube2/config"
-                        /*sh """
-                        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} << 'EOF'
-                        sudo -u ec2-user minikube start --driver=none
-                        EOF
-                        ls -l /home/jenkins/minikube.pem
-                        mkdir /home/jenkins/.kube2/config
-                        scp -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}:/home/ec2-user/.kube/config /home/jenkins/.kube2/config
-                        kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube2/config
-                        """*/
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully.'
-            echo 'Waiting for 10 minutes before cleanup...'
-            sh 'sleep 300' // Espera de 10 minutos para probar los servicios (300 segundos)
-        }
-        failure {
-            echo 'Pipeline failed.'
-        }
-        cleanup {
-            // Eliminar recursos de AWS al final
-            sh 'terraform destroy -auto-approve'
-        }
-    }
-}
+                    }*/

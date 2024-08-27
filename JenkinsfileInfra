@@ -132,7 +132,7 @@ pipeline {
                     def instance_ip = sh(script: "terraform output -raw instance_ip", returnStdout: true).trim()
                     
                     // Conectar por SSH a la instancia EC2 para validar o configurar más cosas si es necesario
-                    sh """
+                    /*sh """
                     ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} <<EOF
                     sudo -u ec2-user minikube start --driver=none
                     if [ -f /home/ec2-user/.kube/config ]; then
@@ -143,11 +143,13 @@ pipeline {
                     fi
                     kubectl get nodes
                     EOF
-                    """
+                    """*/
                     
                     // Actualizar KUBECONFIG con la IP de la nueva instancia
-                    withEnv(["KUBECONFIG=/home/jenkins/.kube/config"]) {
+                    withEnv(["KUBECONFIG=/home/ec2-user/.kube/config"]) {
                         sh """
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}
+                        sudo -u ec2-user minikube start --driver=none
                         scp -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}:/home/ec2-user/.kube/config /home/jenkins/.kube/config
                         kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube/config
                         """

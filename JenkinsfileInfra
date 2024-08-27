@@ -117,6 +117,9 @@ pipeline {
                         output "instance_ip" {
                           value = aws_instance.minikubeTerraform.public_ip
                         }
+                        output "instance_private_ip" {
+                          value = aws_instance.minikubeTerraform.private_ip
+                        }
                         """
                         sh 'terraform init'
                         sh 'terraform plan'
@@ -129,7 +132,8 @@ pipeline {
         stage('Configure Minikube and Deploy') {
             steps {
                 script {
-                    def instance_ip = sh(script: "terraform output -raw instance_ip", returnStdout: true).trim()
+                    //def instance_ip = sh(script: "terraform output -raw instance_ip", returnStdout: true).trim()
+                    def instance_ip = sh(script: "terraform output -raw instance_private_ip", returnStdout: true).trim()
                     
                     // Conectar por SSH a la instancia EC2 para validar o configurar más cosas si es necesario
                     /*sh """
@@ -146,10 +150,11 @@ pipeline {
                     """*/
                     
                     // Actualizar KUBECONFIG con la IP de la nueva instancia
-                    withEnv(["KUBECONFIG=/home/ec2-user/.kube/config"]) {
+                    withEnv(["KUBECONFIG=/home/jenkins/.kube/config"]) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} <<EOF
                         sudo -u ec2-user minikube start --driver=none
+                        EOF
                         scp -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}:/home/ec2-user/.kube/config /home/jenkins/.kube/config
                         kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube/config
                         """

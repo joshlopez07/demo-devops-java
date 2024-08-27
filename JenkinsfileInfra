@@ -150,14 +150,20 @@ pipeline {
                     """*/
                     
                     // Actualizar KUBECONFIG con la IP de la nueva instancia
-                    withEnv(["KUBECONFIG=/home/jenkins/.kube/config"]) {
-                        sh """
-                        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} <<EOF
+                    withEnv(["KUBECONFIG=/home/jenkins/.kube2/config"]) {
+                        sh "ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} sudo -u ec2-user minikube start --driver=none"
+                        sh "ls -l /home/jenkins/minikube.pem"
+                        sh "scp -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}:/home/ec2-user/.kube/config /home/jenkins/.kube2/config"
+                        sh "kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube2/config"
+                        /*sh """
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip} << 'EOF'
                         sudo -u ec2-user minikube start --driver=none
                         EOF
-                        scp -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}:/home/ec2-user/.kube/config /home/jenkins/.kube/config
-                        kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube/config
-                        """
+                        ls -l /home/jenkins/minikube.pem
+                        mkdir /home/jenkins/.kube2/config
+                        scp -i ${SSH_PRIVATE_KEY} ec2-user@${instance_ip}:/home/ec2-user/.kube/config /home/jenkins/.kube2/config
+                        kubectl apply -f deployment.yaml --kubeconfig=/home/jenkins/.kube2/config
+                        """*/
                     }
                 }
             }
